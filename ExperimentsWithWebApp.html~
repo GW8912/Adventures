@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/stylesheet.css">
+
+	<title>Experimenting with Web Application</title>
+    </head>
+    <body>
+	<div id="tabs">
+	    <ul class="nav nav-tabs" data-tabs="tabs">
+		<li class="active"><a href="#My-Table" data-toggle="tab">My Table</a></li>
+		<li><a href="#My-Charts" data-toggle="tab">My Charts</a></li>
+		<li><a href="#Others" data-toggle="tab">Others</a></li>
+	    </ul>
+	</div>
+	<div id="contents" class="tab-content">
+	    <div role="tabpanel" class="tab-pane fade in active" id="My-Table">
+		<p>My Table</p>
+	    	<table class="Mytable">
+		    <thead>
+			<tr>
+			    <th>Content1</th>
+			    <th>Content2</th>
+			</tr>
+		    </thead>
+		    <tbody class="weather">
+			<script id="weather-data" type="x-handlebars-template">
+			    <tr> 
+			        <td>Country</td>
+				<td>{{name}} </td>
+			    </tr>
+
+			    {{#sys}}
+			    <tr> 
+			        <td>Country Callsign</td>
+				<td>{{country}}</td>
+			    </tr>
+			    {{/sys}}
+			    
+			    {{#main}}
+			    <tr> 
+			        <td>Teperature</td>
+				<td>{{temp}} C</td>
+			    </tr>
+			    <tr>
+			        <td>Humidity</td>
+				<td>{{humidity}} %</td>
+			    </tr>
+			    {{/main}}
+			</script>
+		    </tbody>
+		</table>
+	    </div>
+	    <div role="tabpanel" class="tab-pane fade" id="My-Charts">
+		<p>My Charts</p>
+	    </div>
+	    <div role="tabpanel" class="tab-pane fade" id="Others">
+		<p>Others</p>
+		<div>
+		    <ul class ="shoesNav"></ul>
+    		    <script id="shoe-template" type="x-handlebars-template">
+			{{#each this}}
+			    <li class="shoes"><p>{{name}} -- Price: {{price}} </p></li>
+			{{/each}}
+    		    </script>
+		</div>
+	    </div>  
+	</div>
+	<script type="text/javascript" src="SomeData.json"></script>
+	<script src="scripts/jquery-1.12.3.min.js"></script>
+	<script src="scripts/handlebars-v4.0.5.js"></script>
+	<script src="scripts/bootstrap.min.js"></script>
+	<script src="scripts/main.js"></script>
+    </body>
+
+</html>

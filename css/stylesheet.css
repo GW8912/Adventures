@@ -1,0 +1,46 @@
+body{
+    font: small arial, helvetica, sans-serif;
+}
+
+table, th, td{
+    border-collapse: collapse;
+    border: 2px solid black;
+    padding: 8px;
+    table-layout: auto;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.nav li{
+    display: inline;
+}
+
+.nav a{
+    color: black;
+    background: #fe5; 
+    font-weight: bold;
+    padding: 0 10px;
+    text-align: center;
+
+}
+
+.nav-tabs>li>a {
+    border-style: none;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { 
+    border-style: none;
+    border-bottom: none;
+    background-color: #ffcc00;
+}
+
+.nav-tabs{
+    border-bottom: none;
+}
+
+#contents {
+    border: 5px solid #ffcc00;
+    border-color: #ffcc00;
+    padding: 10px;
+}
+
