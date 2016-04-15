@@ -44,3 +44,8 @@ table, th, td{
     padding: 10px;
 }
 
+#finePrint{
+    font-size: xx-small;
+    color: grey;
+}
+

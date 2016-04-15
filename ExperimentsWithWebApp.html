@@ -9,42 +9,36 @@
     <body>
 	<div id="tabs">
 	    <ul class="nav nav-tabs" data-tabs="tabs">
-		<li class="active"><a href="#My-Table" data-toggle="tab">My Table</a></li>
-		<li><a href="#My-Charts" data-toggle="tab">My Charts</a></li>
+		<li class="active"><a href="#My-Table" data-toggle="tab">Weather Table</a></li>
+		<li><a href="#My-Charts" data-toggle="tab">7 days forecast</a></li>
 		<li><a href="#Others" data-toggle="tab">Others</a></li>
 	    </ul>
 	</div>
 	<div id="contents" class="tab-content">
 	    <div role="tabpanel" class="tab-pane fade in active" id="My-Table">
-		<p>My Table</p>
+		<p>Current Weather</p>
 	    	<table class="Mytable">
-		    <thead>
-			<tr>
-			    <th>Content1</th>
-			    <th>Content2</th>
-			</tr>
-		    </thead>
 		    <tbody class="weather">
 			<script id="weather-data" type="x-handlebars-template">
 			    <tr> 
-			        <td>Country</td>
+			        <th>Country</th>
 				<td>{{name}} </td>
 			    </tr>
 
 			    {{#sys}}
 			    <tr> 
-			        <td>Country Callsign</td>
+			        <th>Country Callsign</th>
 				<td>{{country}}</td>
 			    </tr>
 			    {{/sys}}
 			    
 			    {{#main}}
 			    <tr> 
-			        <td>Teperature</td>
-				<td>{{temp}} C</td>
+			        <th>Teperature</th>
+				<td>{{temp}} &deg;C</td>
 			    </tr>
 			    <tr>
-			        <td>Humidity</td>
+			        <th>Humidity</th>
 				<td>{{humidity}} %</td>
 			    </tr>
 			    {{/main}}
@@ -53,8 +47,9 @@
 		</table>
 	    </div>
 	    <div role="tabpanel" class="tab-pane fade" id="My-Charts">
-		<p>My Charts</p>
+		<p>Predicted Max temperature for the next 7 days*</p>
 		<canvas id="myChart" width="400" height="400"></canvas>
+		<p id="finePrint">*Predicted data is not 100% reliable</p>
 	    </div>
 	    <div role="tabpanel" class="tab-pane fade" id="Others">
 		<p>Others</p>
