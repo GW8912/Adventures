@@ -11,98 +11,107 @@ $(function(){
     $(".shoesNav").append (theTemplate(shoesData));
 });
 
-$(function(){
+// A function to open a get XMLHttpRequest and retrive json data
+function getJsonData(url, callback){
     var xhReq = new XMLHttpRequest();
-    xhReq.open("GET", "http://api.openweathermap.org/data/2.5/weather?q=Singapore");
-    xhReq.addEventListener("readystatechange", function(){
-	if(xhReq.readyState ==4 && xhReq.status == 200){
-	    var jsonObject = JSON.parse(xhReq.responseText);
-	    jsonObject["main"].temp = Math.round(jsonObject["main"].temp-273) // covert K to C
-	    var weatherDataScript = jQuery("#weather-data").html(); 
-	    var weatherData = Handlebars.compile (weatherDataScript); 
-	    $(".weather").append (weatherData(jsonObject));
+    xhReq.open("GET", url, true);
 
+    xhReq.onreadystatechange = function(){
+    	if(xhReq.readyState ==4 && xhReq.status == 200){
+	    var jsonObject = JSON.parse(xhReq.responseText);
+	    callback.apply(xhReq);
 	}
-    });
-    xhReq.send();
-})
+    };
 
-$(function loadLineChart(){
+    xhReq.send(null);
+}
+
+// Call getJsonData
+getJsonData("http://api.wunderground.com/api/77e9aa2c2c07e232/hourly/q/SG/Singapore.json",
+function(){
+    // Parse json reponse text to json data object 
+    var jsonData = JSON.parse(this.responseText);
+    var weatherDataScript = jQuery("#weather-data").html(); 
+    var weatherData = Handlebars.compile (weatherDataScript); 
+
+    // Populate MyTable with jsonData
+    $(".Mytable").append (weatherData(jsonData));
+    
+    // Populate line chart with jsonData
+    loadLineChart(jsonData);
+});
 
 
-    var xhReq = new XMLHttpRequest();
-    xhReq.open("GET", "http://api.openweathermap.org/data/2.5/forecast/daily?q=singapore&mode=json&units=metric&cnt=7");
-    xhReq.addEventListener("readystatechange", function(){
-	if(xhReq.readyState ==4 && xhReq.status == 200){
-	    var jsonObject = JSON.parse(xhReq.responseText);
 
-	    var data = {
-		labels: [1, 2, 3, 4, 5, 6, 7],
-		datasets: [
-		    {
-			label: "Temperature, &deg;C",
-			fillColor: "rgba(220,220,220,0.2)",
-			strokeColor: "rgba(220,220,220,1)",
-			pointColor: "rgba(220,220,220,1)",
-			pointStrokeColor: "#fff",
-			pointHighlightFill: "#fff",
-			pointHighlightStroke: "rgba(220,220,220,1)",
-			data: [1, 2, 3, 4, 5, 6, 7]
-		    }
-		]
+function loadLineChart(jsonData){
+    var data = {
+	labels: [],
+	datasets: [
+	    {
+		label: "Temperature, °C",
+		fillColor: "rgba(220,220,220,0.2)",
+		strokeColor: "rgba(151,187,205,1)",
+		pointColor: "rgba(220,220,220,1)",
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(220,220,220,1)",
+		data: []
 	    }
+	]
+    }
 
-	    var epochTime = 1460610000;
-    
-	    var localTime = new Date(0);
-	    localTime.setUTCSeconds(epochTime);
+    // Populate data and labels with jsonData
+    for (var i = 0; i < jsonData.hourly_forecast.length-15; i++) {
+	// Populate time
+	data.labels.push(jsonData.hourly_forecast[i].FCTTIME.civil);
 
-	    for (i = 0; i < data.datasets[0].data.length; i++) {
-		localTime = new Date(0);
-		epochTime = jsonObject.list[i].dt; 	
-		localTime.setUTCSeconds(epochTime);
-		data.labels[i] = localTime.getUTCDate() + "/" + (localTime.getUTCMonth()+1);
-    
-    		data.datasets[0].data[i] =jsonObject.list[i].temp.max; // covert K to C
+	// Populate temperature
+    	data.datasets[0].data.push(jsonData.hourly_forecast[i].temp.metric);
+    }
 
-    	    }    
+    Chart.types.Line.extend({
+	name: "LineAlt",
+	draw: function () {
+	    Chart.types.Line.prototype.draw.apply(this, arguments);
 
-	    Chart.types.Line.extend({
-		name: "LineAlt",
-		draw: function () {
-		    Chart.types.Line.prototype.draw.apply(this, arguments);
-
-		    var ctx = this.chart.ctx;
-		    ctx.save();
-		    // text alignment and color
-		    ctx.textAlign = "center";
-		    ctx.textBaseline = "bottom";
-		    ctx.fillStyle = this.options.scaleFontColor;
-		    // position
-		    var x = this.scale.xScalePaddingLeft * 0.4;
-		    var y = this.chart.height / 2;
-		    // change origin
-		    ctx.translate(x, y)
-		    // rotate text
-		    ctx.rotate(-90 * Math.PI / 180);
-		    ctx.fillText(this.datasets[0].label, 0, 0);
-		    ctx.restore();
-		}
-	    });
-
-    	    setTimeout(function(){
-    		var ctx = document.getElementById("myChart").getContext("2d")
-    		var myLineChart = new Chart(ctx).LineAlt(data, {
-		    scaleLabel: "          <%=value%>"
-		});
-    	    }, 1500);
-
+	    var ctx = this.chart.ctx;
+	    ctx.save();
+	    // text alignment and color
+	    ctx.textAlign = "center";
+	    ctx.textBaseline = "bottom";
+	    ctx.fillStyle = this.options.scaleFontColor;
+	    // position
+	    var x = this.scale.xScalePaddingLeft * 0.4;
+	    var y = this.chart.height / 2;
+	    // change origin
+	    ctx.translate(x, y)
+	    // rotate text
+	    ctx.rotate(-90 * Math.PI / 180);
+	    ctx.fillText(this.datasets[0].label, 0, 0);
+	    ctx.restore();
 	}
     });
-    xhReq.send();
-    
-})
 
+    // Display line chart when hourly forecast tab is selected
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	e.target // newly activated tab
+      	var ctx = documentGetElement("myChart").getContext("2d");
+    	var myLineChart = new Chart(ctx).LineAlt(data, {
+	    scaleLabel: "          <%=value%>",
+	    scaleLineColor: "rgba(0,0,0,1)",
+	    scaleLineWidth: 2,
+	    scaleOverride: true,
+	    scaleSteps: 7,
+	    scaleStartValue: 26,
+	    scaleStepWidth: 1,
+	    responsive: true,
+	    animation: true,
+	    showScale: true,
+	    showTooltips: false
+	});
+    });
+
+}
 
 function documentGetElement(id){
     return document.getElementById(id);
