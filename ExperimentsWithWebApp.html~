@@ -9,46 +9,48 @@
     <body>
 	<div id="tabs">
 	    <ul class="nav nav-tabs" data-tabs="tabs">
-		<li class="active"><a href="#My-Table" data-toggle="tab">My Table</a></li>
-		<li><a href="#My-Charts" data-toggle="tab">My Charts</a></li>
+		<li class="active"><a href="#My-Table" data-toggle="tab">Weather Table</a></li>
+		<li><a href="#My-Charts" data-toggle="tab">Hourly Forecast</a></li>
 		<li><a href="#Others" data-toggle="tab">Others</a></li>
 	    </ul>
 	</div>
 	<div id="contents" class="tab-content">
 	    <div role="tabpanel" class="tab-pane fade in active" id="My-Table">
-		<p>My Table</p>
+		<p>Current Weather</p>
 	    	<table class="Mytable">
-		    <tbody class="weather">
-			<script id="weather-data" type="x-handlebars-template">
-			    <tr> 
-			        <th>Country</th>
-				<td>{{name}} </td>
-			    </tr>
-
-			    {{#sys}}
-			    <tr> 
-			        <th>Country Callsign</th>
-				<td>{{country}}</td>
-			    </tr>
-			    {{/sys}}
-			    
-			    {{#main}}
-			    <tr> 
-			        <th>Teperature</th>
-				<td>{{temp}} &deg;C</td>
-			    </tr>
+		    <script id="weather-data" type="x-handlebars-template">
+			<thead>
 			    <tr>
-			        <th>Humidity</th>
-				<td>{{humidity}} %</td>
+				<th>Time</th>
+				<th>Humidity, %</th>
+				<th>Temperature, &deg;C</th>
+				<th colspan="2">Condition</th>
 			    </tr>
-			    {{/main}}
-			</script>
-		    </tbody>
+			</thead>
+			<tbody >
+			    {{#hourly_forecast}}
+				
+				    <tr>
+					{{#FCTTIME}}
+					    <th>{{civil}} </th>
+					{{/FCTTIME}}
+					<td>{{humidity}}</td>
+					{{#temp}}
+					    <td>{{metric}}</td>
+					{{/temp}}
+					<td>{{condition}}</td>
+					<td><img src="{{icon_url}}"></img> </td>
+				    </tr>
+				
+			    {{/hourly_forecast}}
+			</tbody>
+		    </script>
 		</table>
+		
 	    </div>
 	    <div role="tabpanel" class="tab-pane fade" id="My-Charts">
-		<p>Predicted Max temperature for the next 7 days*</p>
-		<canvas id="myChart" width="400" height="400"></canvas>
+		<p>Predicted Hourly Temperature*</p>
+		<canvas id="myChart" width="800" height="400"></canvas>
 		<p id="finePrint">*Predicted data is not 100% reliable</p>
 	    </div>
 	    <div role="tabpanel" class="tab-pane fade" id="Others">
