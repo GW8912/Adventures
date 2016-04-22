@@ -38,17 +38,18 @@ table, th, td{
     border-bottom: none;
 }
 
+
 #contents {
     border: 5px solid #ffcc00;
     border-color: #ffcc00;
     padding: 10px;
 }
 
+#myChart{
+    padding: 10px;
+}
 #finePrint{
     font-size: xx-small;
     color: grey;
 }
 
-#myChart{
-    border: 5px solid #ffcc00;
-}
