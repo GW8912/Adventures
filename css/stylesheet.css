@@ -1,5 +1,7 @@
 body{
-    font: small arial, helvetica, sans-serif;
+    font: small arial, helvetica, sans-serif, NSimSun;
+    font-size: 12px;
+    
 }
 
 table, th, td{
