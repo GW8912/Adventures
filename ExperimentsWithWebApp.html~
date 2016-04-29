@@ -1,8 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+
+<html>
     <head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/stylesheet.css">
+	
 
 	<title>Experimenting with Web Application</title>
     </head>
@@ -27,21 +29,20 @@
 				<th colspan="2">Condition</th>
 			    </tr>
 			</thead>
-			<tbody >
+			<tbody>
 			    {{#hourly_forecast}}
-				
-				    <tr>
-					{{#FCTTIME}}
-					    <th>{{civil}} </th>
-					{{/FCTTIME}}
-					<td>{{humidity}}</td>
-					{{#temp}}
-					    <td>{{metric}}</td>
-					{{/temp}}
-					<td>{{condition}}</td>
-					<td><img src="{{icon_url}}"></img> </td>
-				    </tr>
-				
+				<tr>
+				    {{#FCTTIME}}
+					<th>{{civil}} </th>
+				    {{/FCTTIME}}
+				    <td>{{humidity}}</td>
+				    {{#temp}}
+				    	<td>{{metric}}</td>
+				    {{/temp}}
+				    <td>{{condition}}</td>
+				    <td><img src="{{icon_url}}"></img> </td>
+				    <td>{{mChar}}</td>
+				</tr>
 			    {{/hourly_forecast}}
 			</tbody>
 		    </script>
@@ -69,7 +70,8 @@
 	<script src="scripts/handlebars-v4.0.5.js"></script>
 	<script src="scripts/bootstrap.min.js"></script>
 	<script src="scripts/chart.min.js"></script>
-	<script src="scripts/main.js"></script>
+	<script src="scripts/angular.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/main.js"></script>
     </body>
 
 </html>

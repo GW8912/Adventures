@@ -1,4 +1,4 @@
-$(function(){
+﻿$(function(){
     var shoesData = [{name:"Nike", price:199.00 }, {name:"Loafers", price:59.00 }, {name:"Wing Tip", price:259.00 }];
 
     var items = null;
@@ -18,37 +18,45 @@ function getJsonData(url, callback){
 
     xhReq.onreadystatechange = function(){
     	if(xhReq.readyState ==4 && xhReq.status == 200){
-	    var jsonObject = JSON.parse(xhReq.responseText);
-	    callback.apply(xhReq);
-	}
+	    callback.apply(xhReq); // store response text
+		}	
     };
+	
 
     xhReq.send(null);
 }
 
 // Call getJsonData
-getJsonData("http://api.wunderground.com/api/77e9aa2c2c07e232/hourly/q/SG/Singapore.json",
+window.addEventListener("load", getJsonData("http://api.wunderground.com/api/77e9aa2c2c07e232/hourly/q/SG/Singapore.json",
 function(){
     // Parse json reponse text to json data object 
     var jsonData = JSON.parse(this.responseText);
+
+    // Trim json Data to have 24 hour period
+    for(var i = 0; i < 11; i++){
+	jsonData.hourly_forecast.pop();
+    }
+
     var weatherDataScript = jQuery("#weather-data").html(); 
     var weatherData = Handlebars.compile (weatherDataScript); 
 
+    // Populate jsonData with mandarin weather condition
+    var newJsonData = loadMandarinConditions(jsonData);
+
     // Populate MyTable with jsonData
-    $(".Mytable").append (weatherData(jsonData));
+    $(".Mytable").append (weatherData(newJsonData));
     
     // Populate line chart with jsonData
-    loadLineChart(jsonData);
-});
+    loadLineChart(newJsonData);
 
-
+}));
 
 function loadLineChart(jsonData){
     var data = {
 	labels: [],
 	datasets: [
 	    {
-		label: "Temperature, �C",
+		label: "Temperature, \u00B0C",
 		fillColor: "rgba(220,220,220,0.2)",
 		strokeColor: "rgba(151,187,205,1)",
 		pointColor: "rgba(220,220,220,1)",
@@ -60,8 +68,8 @@ function loadLineChart(jsonData){
 	]
     }
 
-    // Populate data and labels with jsonData
-    for (var i = 0; i < jsonData.hourly_forecast.length-15; i++) {
+    // Populate data and labels with jsonData in a 24 hour weather period
+    for (var i = 0; i < jsonData.hourly_forecast.length; i++) {
 	// Populate time
 	data.labels.push(jsonData.hourly_forecast[i].FCTTIME.civil);
 
@@ -108,10 +116,29 @@ function loadLineChart(jsonData){
 	    animation: true,
 	    showScale: true,
 	    showTooltips: false
-	});
+		});
     });
-
 }
+
+function loadMandarinConditions(jsonData){
+
+    for (var i = 0; i < jsonData.hourly_forecast.length; i++) {
+	if(jsonData.hourly_forecast[i].condition == "Chance of a Thunderstorm"){
+	    jsonData.hourly_forecast[i].mChar = "会下大雨";
+	}else if(jsonData.hourly_forecast[i].condition == "Thunderstorm"){
+	    jsonData.hourly_forecast[i].mChar = "下大雨";
+	}else if(jsonData.hourly_forecast[i].condition == "Mostly Cloudy"){
+	    jsonData.hourly_forecast[i].mChar = "很多云";
+	}else if(jsonData.hourly_forecast[i].condition == "Partly Cloudy"){
+	    jsonData.hourly_forecast[i].mChar = "多云";
+	}else{
+
+	}
+    }
+
+    return jsonData;
+}
+
 
 function documentGetElement(id){
     return document.getElementById(id);
